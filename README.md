@@ -13,4 +13,6 @@
 
 【2】Demo中dll库来自于https://github.com/dathlin/OpcUaHelper.git  以及  Nuget等
 
-【3】待补充......
+【3】Demo运行时采用的Unity编辑器版本：2021.3.18f1c1
+
+【4】待补充......
