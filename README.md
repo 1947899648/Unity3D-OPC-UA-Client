@@ -11,6 +11,6 @@
     5.节点数据的订阅；
     6.节点数据的解除订阅。
 
-【2】Demo中用到的库来自于https://github.com/dathlin/OpcUaHelper.git以及Nuget
+【2】Demo中用到的库来自于https://github.com/dathlin/OpcUaHelper.git  以及  Nuget
 
 【3】待补充......
