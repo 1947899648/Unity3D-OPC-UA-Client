@@ -1653,7 +1653,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 868857089}
         m_TargetAssemblyTypeName: MyOpcClient, Assembly-CSharp
-        m_MethodName: SubscribeNode
+        m_MethodName: SubscribeNode_New
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4002,7 +4002,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 868857089}
         m_TargetAssemblyTypeName: MyOpcClient, Assembly-CSharp
-        m_MethodName: RemoveSubscribeNode
+        m_MethodName: RemoveSubscribeNode_New
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

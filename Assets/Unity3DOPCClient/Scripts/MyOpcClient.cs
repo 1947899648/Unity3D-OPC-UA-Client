@@ -12,6 +12,7 @@ using OpcUaHelper;
 /// </summary>
 public class MyOpcClient : MonoBehaviour
 {
+    #region 字段
     /// <summary>
     /// OPC UA 客户端是否运行
     /// </summary>
@@ -67,6 +68,12 @@ public class MyOpcClient : MonoBehaviour
     /// </summary>
     public OpcUaClient client;
 
+    private bool isUpdateText = false;
+    private string res;
+    private string changeDate;
+    #endregion
+
+    #region Mono
     private void Awake()
     {
         client = new OpcUaClient();
@@ -82,10 +89,9 @@ public class MyOpcClient : MonoBehaviour
             isUpdateText = false;
         }
     }
-    private bool isUpdateText = false;
-    private string res;
-    private string changeDate;
+    #endregion
 
+    #region 核心方法-连接-中断-主动读-主动写
     /// <summary>
     /// 连接OPC UA服务器
     /// </summary>
@@ -153,14 +159,17 @@ public class MyOpcClient : MonoBehaviour
             readResult.text = "error";
         }
     }
+    #endregion
 
+    #region 核心方法-订阅相关_旧
     /// <summary>
     /// 订阅监听指定节点内容变化事件
     /// </summary>
-    public void SubscribeNode()
+    [Obsolete]
+    public void SubscribeNode_Old()
     {
         string nodeId = nodeId_sub_Input.text;
-        client.AddSubscription("A", nodeId, SubCallback);
+        client.AddSubscription("A", nodeId, MyMethod_Old);
         //以下需用户自定义开发
         {
             //client.AddSubscription("B", nodeId, SubCallback);
@@ -170,31 +179,13 @@ public class MyOpcClient : MonoBehaviour
     }
 
     /// <summary>
-    /// 移除对指定KEY值的订阅监听行为
-    /// </summary>
-    public void RemoveSubscribeNode()
-    {
-        //用不到节点信息，因为订阅的时候节点已经和KEY建立关系
-        string nodeId = nodeId_sub_Input.text;
-        try
-        {
-            client.RemoveSubscription("A");
-            nodeStateShow.text = "remove sub ok";
-            changeTimeShow.text = "stop";
-        }
-        catch
-        {
-            nodeStateShow.text = "error";
-        }
-    }
-
-    /// <summary>
     /// 指定节点内容变化事件和相关业务逻辑方法的绑定
     /// </summary>
     /// <param name="key">用户可自定义KEY，比如本例中A、B等</param>
     /// <param name="monitoredItem"></param>
     /// <param name="args"></param>
-    private void SubCallback(string key, MonitoredItem monitoredItem, MonitoredItemNotificationEventArgs args)
+    [Obsolete]
+    private void MyMethod_Old(string key, MonitoredItem monitoredItem, MonitoredItemNotificationEventArgs args)
     {
         // 如果有多个的订阅值都关联了当前的方法，可以通过key和monitoredItem来区分
         if (key.Equals("A"))
@@ -217,4 +208,64 @@ public class MyOpcClient : MonoBehaviour
             //业务C：执行非OPC UA相关的业务逻辑方法等，用户可在此自定义开发
         }
     }
+    #endregion
+
+    #region 核心方法-订阅相关_新
+    /// <summary>
+    /// 当然，可使用扩展方法去忽略key概念
+    /// </summary>
+    public void SubscribeNode_New()
+    {
+        string nodeId = nodeId_sub_Input.text;
+        client.AddSubscription(nodeId, MyMethod_New);
+        nodeStateShow.text = "sub ok";
+    }
+
+    private void MyMethod_New(string nodeId, MonitoredItem monitoredItem, MonitoredItemNotificationEventArgs args)
+    {
+        MonitoredItemNotification notification = args.NotificationValue as MonitoredItemNotification;
+        if (notification != null)
+        {
+            string nodeIdNewValue = notification.Value.WrappedValue.Value.ToString();
+        }
+    }
+    #endregion
+
+    #region 核心方法-解除订阅_旧
+    /// <summary>
+    /// 移除对指定KEY值的订阅监听行为
+    /// </summary>
+    [Obsolete]
+    public void RemoveSubscribeNode_Old()
+    {
+        string nodeId = nodeId_sub_Input.text;
+        try
+        {
+            client.RemoveSubscription("A");
+            nodeStateShow.text = "remove sub ok";
+            changeTimeShow.text = "stop";
+        }
+        catch
+        {
+            nodeStateShow.text = "error";
+        }
+    }
+    #endregion
+
+    #region 核心方法-解除订阅_新
+    public void RemoveSubscribeNode_New()
+    {
+        string nodeId = nodeId_sub_Input.text;
+        try
+        {
+            client.RemoveSubscribeNode(nodeId);
+            nodeStateShow.text = "remove sub ok";
+            changeTimeShow.text = "stop";
+        }
+        catch
+        {
+            nodeStateShow.text = "error";
+        }
+    }
+    #endregion
 }
